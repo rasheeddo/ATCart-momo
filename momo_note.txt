@@ -13,9 +13,9 @@ ec2-54-95-55-203.ap-northeast-1.compute.amazonaws.com
 
 
 #### Test room ####
-./momo --no-audio-device --no-video-device --resolution 3840x2160 --serial /dev/pts/0,9600 ayame wss://ayame-lite.shiguredo.jp/signaling cieloginzafarm@e88147a4937ad2816f38353a9f83bcec7a5dec1a954efdcd44c51196a467d27a_control_test --signaling-key j05Dx-tzh3mgMEq0MWZyoRJ5hDkxE1VCQRPa2op-nRouHF_V
+./momo --no-audio-device --no-video-device --resolution 3840x2160 --serial /dev/pts/4,9600 ayame wss://ayame-lite.shiguredo.jp/signaling cieloginzafarm@e88147a4937ad2816f38353a9f83bcec7a5dec1a954efdcd44c51196a467d27a_control_test --signaling-key j05Dx-tzh3mgMEq0MWZyoRJ5hDkxE1VCQRPa2op-nRouHF_V
 
-./momo --no-audio-device --video-device /dev/video0 --resolution 3840x2160 --serial /dev/pts/0,9600 ayame wss://ayame-lite.shiguredo.jp/signaling cieloginzafarm@e88147a4937ad2816f38353a9f83bcec7a5dec1a954efdcd44c51196a467d27a_front_test --signaling-key j05Dx-tzh3mgMEq0MWZyoRJ5hDkxE1VCQRPa2op-nRouHF_V
+./momo --no-audio-device --video-device /dev/video0 --resolution 3840x2160 --serial /dev/pts/4,9600 ayame wss://ayame-lite.shiguredo.jp/signaling cieloginzafarm@e88147a4937ad2816f38353a9f83bcec7a5dec1a954efdcd44c51196a467d27a_front_test --signaling-key j05Dx-tzh3mgMEq0MWZyoRJ5hDkxE1VCQRPa2op-nRouHF_V
 
-./momo --no-audio-device --video-device /dev/video1 --resolution 3840x2160 --serial /dev/pts/0,9600 ayame wss://ayame-lite.shiguredo.jp/signaling cieloginzafarm@e88147a4937ad2816f38353a9f83bcec7a5dec1a954efdcd44c51196a467d27a_back_test --signaling-key j05Dx-tzh3mgMEq0MWZyoRJ5hDkxE1VCQRPa2op-nRouHF_V
+./momo --no-audio-device --video-device /dev/video1 --resolution 3840x2160 --serial /dev/pts/4,9600 ayame wss://ayame-lite.shiguredo.jp/signaling cieloginzafarm@e88147a4937ad2816f38353a9f83bcec7a5dec1a954efdcd44c51196a467d27a_back_test --signaling-key j05Dx-tzh3mgMEq0MWZyoRJ5hDkxE1VCQRPa2op-nRouHF_V
 
