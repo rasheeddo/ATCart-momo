@@ -1,0 +1,94 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1, maximum-scale=1">
+    <META http-equiv="Content-Script-Type" content="text/javascript">
+    <META http-equiv="Content-Style-Type" content="text/css">
+    <link href="joystick_demo.css" rel="stylesheet" type="text/css" media="screen" />
+　　<link rel="stylesheet" href="css/main.css">
+    <link rel="shortcut icon" href="#">
+    <title>FARBOT</title>
+  </head>
+  <body>
+    <h3>FARBOT CONTROL</h3>
+    <div>
+      <select id="codec">
+        <option value="H264">H264</option>
+        <option value="VP8">VP8</option>
+        <option value="VP9">VP9</option>
+      </select>
+      <input type="button" onclick="connect();" value="Connect">
+      <input type="button" onclick="disconnect();" value="Disconnect">
+      <input type="button" onclick="play();" value="Play">
+      <input type="text" id="data_text">
+      <input type="button" onclick="sendDataChannel();" value="Send">
+    </div>
+
+    <div>
+      <video id="remote_video" autoplay style="border: 3px solid gray;"></video>
+    </div>
+
+  <p>REC Data:
+　　<button id="record" disabled>Start Rec</button>
+    Echo cancellation: <input type="checkbox" id="echoCancellation">
+    <video id="recorded" playsinline loop></video>
+    <button id="play" disabled>Play</button>
+    <button id="download" disabled>Download</button>
+  </p>
+
+    <div id="interface_container">
+      <select id="gamepad_selector" onChange="gamepad_selector_change();">
+        <option value="">Gamepad未選択</option>
+      </select>
+      <select id="mode_selector" onChange="display_mode_change();">
+        <option value="graphic_auto">レイアウトAUTO</option>
+        <option value="graphic_horizontal">ALL水平バー表示</option>
+        <option value="text_raw">Text mode(Gamepad API raw data)</option>
+      </select>
+    </div>
+
+    <div id="info_panel">  
+      <div style="margin: 1em;">time_stamp:00000</div>
+      <div class="axis_block">
+        <div class="axis_xy">
+          <div class="axis_xy cross_line"></div>
+          <div class="axis_xy knob" id="xy_knob_0"></div>
+        </div>
+        <div class="axis_value">(X,Y) = (nnnnn,nnnnnn)</div>
+      </div>
+      <div class="axis_block">
+        <div class="axis_throttle">
+          <div class="axis_throttle knob" id="thr_knob_2"></div>
+        </div>
+        <div class="axis_value">AXIS VALUE = (Z)</div>
+      </div>
+      <div class="axis_block">
+        <div class="axis_hat">
+          <div class="axis_hat knob" id="hat_knob_9"></div>
+        </div>
+        <div class="axis_value"></div>
+      </div>
+      <div class="axis_block_no_inline">
+        <div class="axis_rudder">
+          <div class="axis_rudder center_line"></div>
+          <div class="axis_rudder knob" id="rud_knob_3"></div>
+        </div>
+        <div class="axis_value">AXIS VALUE = (Z)</div>
+      </div>
+      <div class="button_block">
+        <div style="margin:1em">- Buttons -</div>
+        <div class="button_box" id="btn_0">B12</div>
+        <div class="button_box" id="btn_0">B10</div>
+        <div class="button_box" id="btn_0">B1</div>
+        <div class="button_box" id="btn_0">B3</div>
+        <div class="button_box" id="btn_0">B2</div>
+      </div>
+    </div>
+  
+    <script type='text/javascript' src='./farbot.js'></script>
+    <script src="js/qs.min.js"></script>
+    <script type='text/javascript' src='js/custom.js'></script>
+    <!--<script type='text/javascript' src='./joystick_demo.js'></script>-->
+  </body>
+</html>

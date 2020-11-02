@@ -1,0 +1,13 @@
+[Unit]
+Description = FARBOT_WebRTC
+After=local-fs.target
+ConditionPathExists=/opt/FARBOT_WebRTC/bin
+
+[Service]
+ExecStart=/opt/FARBOT_WebRTC/bin/FARBOT_WebRTC.sh
+Restart=no
+Type=simple
+StandardOutput=journal+console
+
+[Install]
+WantedBy=multi-user.target

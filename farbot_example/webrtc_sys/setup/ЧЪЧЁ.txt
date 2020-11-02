@@ -1,0 +1,37 @@
+sudo cp FARBOT_WebRTC.service /etc/systemd/system
+sudo chown root:root /etc/systemd/system/FARBOT_WebRTC.service
+sudo chmod 644 /etc/systemd/system/FARBOT_WebRTC.service
+
+sudo mkdir -p /opt/FARBOT_WebRTC/bin
+sudo chmod 755 /opt/FARBOT_WebRTC/bin
+
+sudo cp FARBOT_WebRTC.sh /opt/FARBOT_WebRTC/bin
+sudo chown root:root /opt/FARBOT_WebRTC/bin/FARBOT_WebRTC.sh
+sudo chmod 755 /opt/FARBOT_WebRTC/bin/FARBOT_WebRTC.sh
+ls -l /opt/FARBOT_WebRTC/bin
+合計 4
+-rwxr-xr-x 1 root root 146  4月 24 11:12 FARBOT_WebRTC.sh
+
+
+sudo systemctl daemon-reload
+sudo systemctl status FARBOT_WebRTC.service
+● FARBOT_WebRTC.service - FARBOT_WebRTC
+   Loaded: loaded (/etc/systemd/system/FARBOT_WebRTC.service; disabled; vendor p
+   Active: inactive (dead)
+
+
+sudo systemctl enable FARBOT_WebRTC.service
+Created symlink /etc/systemd/system/multi-user.target.wants/FARBOT_WebRTC.service → /etc/systemd/system/FARBOT_WebRTC.service.
+
+sudo systemctl status FARBOT_WebRTC.service
+● FARBOT_WebRTC.service - FARBOT_WebRTC
+   Loaded: loaded (/etc/systemd/system/FARBOT_WebRTC.service; enabled; vendor pr
+   Active: inactive (dead)
+
+sudo systemctl start FARBOT_WebRTC.service
+sudo systemctl status FARBOT_WebRTC.service
+sudo systemctl stop FARBOT_WebRTC.service
+
+journalctl -u FARBOT_WebRTC.service
+
+

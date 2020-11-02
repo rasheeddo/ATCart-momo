@@ -1,0 +1,73 @@
+[000:000] [5971] (device_info_linux.cc:45): NumberOfDevices
+[000:070] [5971] (device_info_linux.cc:70): GetDeviceName
+[000:071] [5971] (v4l2_video_capturer.cpp:71): GetDeviceName(0): device_name=HD USB Camera, unique_name=usb-70090000.xusb-2.1
+[000:071] [5971] (device_info_linux.cc:45): NumberOfDevices
+[000:072] [5971] (device_info_linux.cc:70): GetDeviceName
+[000:074] [5971] (v4l2_video_capturer.cpp:71): GetDeviceName(1): device_name=罗技高清网络摄像机 C93, unique_name=usb-70090000.xusb-2.4
+[000:074] [5971] (device_info_linux.cc:45): NumberOfDevices
+[000:075] [5971] (device_info_linux.cc:45): NumberOfDevices
+[000:077] [5971] (device_info_linux.cc:70): GetDeviceName
+[000:078] [5971] (v4l2_video_capturer.cpp:221): Video Capture enumerats supported image formats:
+[000:078] [5971] (v4l2_video_capturer.cpp:223):   { pixelformat = MJPG, description = 'ff39cd8c' }
+[000:078] [5971] (v4l2_video_capturer.cpp:223):   { pixelformat = YUYV, description = 'ff39cd8c' }
+[000:078] [5971] (v4l2_video_capturer.cpp:239): We prefer format YUYV
+[000:103] [5971] (v4l2_video_capturer.cpp:52): Get Capture
+[000:145] [5971] (audio_device_impl.cc:76): Create
+[000:145] [5971] (audio_device_impl.cc:84): CreateForTest
+[000:159] [5971] (audio_device_buffer.cc:65): AudioDeviceBuffer::ctor
+[000:159] [5971] (audio_device_impl.cc:122): AudioDeviceModuleImpl
+[000:159] [5971] (audio_device_impl.cc:126): CheckPlatform
+[000:159] [5971] (audio_device_impl.cc:137): current platform is Linux
+[000:159] [5971] (audio_device_impl.cc:156): CreatePlatformSpecificObjects
+[000:159] [5971] (audio_device_impl.cc:947): PlatformAudioLayer
+[000:159] [5971] (audio_device_impl.cc:267): PulseAudio support is enabled.
+[000:159] [5971] (audio_device_impl.cc:299): Dummy Audio APIs will be utilized.
+[000:159] [5971] (audio_device_impl.cc:312): AttachAudioBuffer
+[000:160] [5971] (audio_processing_impl.cc:272): Injected APM submodules:
+Echo control factory: 0
+Echo detector: 0
+Capture analyzer: 0
+Capture post processor: 0
+Render pre processor: 0
+[000:183] [5971] (webrtc_voice_engine.cc:206): WebRtcVoiceEngine::WebRtcVoiceEngine
+[000:183] [5971] (webrtc_video_engine.cc:574): WebRtcVideoEngine::WebRtcVideoEngine()
+[000:184] [5992] (webrtc_voice_engine.cc:228): WebRtcVoiceEngine::Init
+[000:185] [5992] (audio_device_impl.cc:332): Init
+[000:185] [5992] (audio_device_impl.cc:676): SetPlayoutDevice(0)
+[000:185] [5992] (adm_helpers.cc:44): Unable to set playout device.
+[000:185] [5992] (audio_device_impl.cc:851): RegisterAudioCallback
+[000:185] [5992] (audio_device_buffer.cc:82): RegisterAudioCallback
+[000:185] [5992] (webrtc_voice_engine.cc:315): WebRtcVoiceEngine::ApplyOptions: AudioOptions {aec: 1, agc: 1, ns: 1, hf: 1, swap: 0, audio_jitter_buffer_max_packets: 200, audio_jitter_buffer_fast_accelerate: 0, audio_jitter_buffer_min_delay_ms: 0, audio_jitter_buffer_enable_rtx_handling: 0, typing: 1, experimental_agc: 0, experimental_ns: 0, residual_echo_detector: 1, }
+[000:185] [5992] (audio_device_impl.cc:867): BuiltInAECIsAvailable
+[000:185] [5992] (audio_device_generic.cc:18): BuiltInAECIsAvailable: Not supported on this platform
+[000:185] [5992] (audio_device_impl.cc:870): output: 0
+[000:185] [5992] (audio_device_impl.cc:883): BuiltInAGCIsAvailable
+[000:185] [5992] (audio_device_generic.cc:28): BuiltInAGCIsAvailable: Not supported on this platform
+[000:185] [5992] (audio_device_impl.cc:886): output: 0
+[000:185] [5992] (audio_device_impl.cc:899): BuiltInNSIsAvailable
+[000:185] [5992] (audio_device_generic.cc:38): BuiltInNSIsAvailable: Not supported on this platform
+[000:185] [5992] (audio_device_impl.cc:902): output: 0
+[000:185] [5992] (webrtc_voice_engine.cc:431): Stereo swapping enabled? 0
+[000:185] [5992] (webrtc_voice_engine.cc:436): NetEq capacity is 200
+[000:185] [5992] (webrtc_voice_engine.cc:442): NetEq fast mode? 0
+[000:185] [5992] (webrtc_voice_engine.cc:448): NetEq minimum delay is 0
+[000:185] [5992] (webrtc_voice_engine.cc:454): NetEq handle reordered packets? 0
+[000:185] [5992] (webrtc_voice_engine.cc:474): Experimental ns is enabled? 0
+[000:185] [5992] (webrtc_voice_engine.cc:525): NS set to 1
+[000:185] [5992] (webrtc_voice_engine.cc:529): Typing detection is enabled? 1
+[000:185] [5992] (audio_processing_impl.cc:526): AudioProcessing::ApplyConfig: AudioProcessing::Config{ pipeline: {maximum_internal_processing_rate: 32000, multi_channel_render: 0, , multi_channel_capture: 0}, pre_amplifier: { enabled: 0, fixed_gain_factor: 1 }, high_pass_filter: { enabled: 1 }, echo_canceller: { enabled: 1, mobile_mode: 0, enforce_high_pass_filtering: 1 }, noise_suppression: { enabled: 1, level: High }, transient_suppression: { enabled: 0 }, voice_detection: { enabled: 1 }, gain_controller1: { enabled: 1, mode: AdaptiveAnalog, target_level_dbfs: 3, compression_gain_db: 9, enable_limiter: 1, analog_level_minimum: 0, analog_level_maximum: 255 }, gain_controller2: { enabled: 0, fixed_digital: { gain_db: 0 }, adaptive_digital: { enabled: 0, level_estimator: Rms, use_saturation_protector: 1, extra_saturation_margin_db: 2 } }, residual_echo_detector: { enabled: 1 }, level_estimation: { enabled: 0 } }
+[000:186] [5992] (agc_manager_direct.cc:69): [agc] GetMinMicLevel
+[000:186] [5992] (agc_manager_direct.cc:73): [agc] Using default min mic level: 12
+[002:871] [5971] (serial_data_manager.cpp:126): onRead async_read_some failed  error :asio.misc:2
+[002:924] [5993] (thread.cc:668): Message took 53ms to dispatch. Posted from: ~VideoTrackProxyWithInternal@../../../_source/ubuntu-18.04_armv8/webrtc/src/api/media_stream_track_proxy.h:43
+[002:924] [5992] (webrtc_video_engine.cc:578): WebRtcVideoEngine::~WebRtcVideoEngine
+[002:924] [5992] (webrtc_voice_engine.cc:214): WebRtcVoiceEngine::~WebRtcVoiceEngine
+[002:924] [5992] (audio_device_impl.cc:802): StopPlayout
+[002:924] [5992] (audio_device_impl.cc:806): output: 0
+[002:924] [5992] (audio_device_impl.cc:833): StopRecording
+[002:924] [5992] (audio_device_impl.cc:837): output: 0
+[002:924] [5992] (audio_device_impl.cc:851): RegisterAudioCallback
+[002:924] [5992] (audio_device_buffer.cc:82): RegisterAudioCallback
+[002:924] [5992] (audio_device_impl.cc:349): Terminate
+[002:925] [5992] (audio_device_impl.cc:318): ~AudioDeviceModuleImpl
+[002:925] [5992] (audio_device_buffer.cc:76): AudioDeviceBuffer::~dtor
