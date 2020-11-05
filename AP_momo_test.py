@@ -12,6 +12,9 @@ from dronekit import connect, VehicleMode
 from pymavlink import mavutil
 import subprocess
 import argparse
+import threading
+
+############################### Arguments parser #############################################
 
 parser = argparse.ArgumentParser(description='CUBE pilot and momo')
 parser.add_argument('--port',
@@ -29,10 +32,12 @@ if port is None:
 	print("Error: please specify second port of socat generated")
 	quit()
 
+################################################################################################
 vehicle = None
 is_vehicle_connected = False
 
 global rover_status
+global current_mode
 
 cur_lat = 0.0
 cur_lon = 0.0
@@ -163,11 +168,39 @@ def gps_callback(self, attr_name, value):
 	# 6 = rtkFixed
 	## range is -pi to pi, 0 is north
 
+def change_flight_mode(_mode):
+
+	global current_mode
+
+	if current_mode != _mode:
+		vehicle.mode = _mode
+	current_mode = _mode
+
+
+def gps_publish_worker(_out_file_path, lock, _port):
+
+	global rover_status
+
+	print("Started gps publisher thread")
+	while True:
+
+		file = open(_out_file_path, "w+")
+		lock.acquire()
+		json_data = json.dumps(rover_status)
+		file.write(json_data)
+		cmd1 = 'echo $(cat rover_status.txt) > {:s}'.format(_port)
+		subprocess.run(cmd1, shell=True, check=True)
+		# print("send rover status from thread")
+		lock.release()
+		time.sleep(0.1)
+
+
 
 print("INFO: Connecting to vehicle.")
 while (not vehicle_connect()):
 	pass
 print("INFO: Vehicle connected.")
+
 
 vehicle.mode = "HOLD"
 current_mode = "HOLD"
@@ -192,42 +225,47 @@ vehicle.add_attribute_listener('location', location_callback)
 vehicle.add_attribute_listener('attitude', attitude_callback)
 vehicle.add_attribute_listener('gps_0', gps_callback)
 
-# PORT = "/dev/pts/1"
 PORT = port
 
 prev_arm_state = 0
 prev_mode = 'NONE'
 
-with open(PORT, "rb", buffering=0) as term:
+## Have to use another thread to publish rover status data, otherwise it cannot push back to browser
+lock = threading.Lock()
+gpsPublishThread = threading.Thread(target=gps_publish_worker, args=(out_file_path,lock,PORT), daemon=True)
+gpsPublishThread.start()
 
-	print("begin")
-	while True:
-		# print(term)
+####  This is a data packet that we will get from browser (as one single json)####
+## { "ID" : "Logicool Gamepad F310 (STANDARD GAMEPAD Vendor: 046d Product: c21d)", 
+## "TIMESTAMP" : 203376.22, "INDEX" : 0, "MAPPING" : "standard", 
+## "AXES" : { "#00" : 0, "#01" : 0, "#02" : 0, "#03" : 0 }, 
+## "BUTTONS" : { "#00" : 0, "#01" : 0, "#02" : 0, "#03" : 0, "#04" : 0, "#05" : 0, "#06" : 0, "#07" : 0, "#08" : 0, "#09" : 0, "#10" : 0, "#11" : 0, "#12" : 0, "#13" : 0, "#14" : 0, "#15" : 0, "#16" : 0 }, 
+## "TOTAL_AXES" : 4, "TOTAL_BUTTONS" : 17, 
+## "MODE": "HOLD", "TURN_DIR" : "NONE", "FORWARD" : 0, "LEFT" : 0, "RIGHT" : 0, "ARMED" : 0}
+
+
+while True:
+
+	with open(PORT, "rb", buffering=0) as term:
+	
 		try:
 			str_buffer = read_socat(term)
-
-			dec = json.loads(str_buffer)
-			# print("Here")
-			## Joystick input
 			# print(str_buffer)
+			dec = json.loads(str_buffer)
+
+			#### Gamepad is plugged ####
 			if len(str_buffer) > 400:
 				### Mode / Armed ###
 				if dec["BUTTONS"]["#02"] == 1 or (dec["MODE"] != prev_mode and dec["MODE"] == "MANUAL"):
-					if current_mode != "MANUAL":
-						vehicle.mode = "MANUAL"
-					current_mode = "MANUAL"
+					change_flight_mode("MANUAL")
 					print("MANUAL")
 
 				elif dec["BUTTONS"]["#01"] == 1 or (dec["MODE"] != prev_mode and dec["MODE"] == "HOLD"):
-					if current_mode != "HOLD":
-						vehicle.mode = "HOLD"
-					current_mode = "HOLD"
+					change_flight_mode("HOLD")
 					print("HOLD")
 
 				elif dec["BUTTONS"]["#00"] == 1 or (dec["MODE"] != prev_mode and dec["MODE"] == "AUTO"):
-					if current_mode != "AUTO":
-						vehicle.mode = "AUTO"
-					current_mode = "AUTO"
+					change_flight_mode("AUTO")
 					print("AUTO")
 
 				elif dec["BUTTONS"]["#03"] == 1 or int(dec['ARMED']) != prev_arm_state:
@@ -239,58 +277,42 @@ with open(PORT, "rb", buffering=0) as term:
 
 				### Direction Control ###
 				if dec["BUTTONS"]["#04"] == 1 or dec["TURN_DIR"] == "TURNLEFT45":
-					if current_mode != "GUIDED":
-						vehicle.mode = "GUIDED"
-						current_mode = "GUIDED"
+					change_flight_mode("GUIDED")
 					turn(-45)
 					print("TURNLEFT45")
 
 				elif dec["BUTTONS"]["#06"] == 1 or dec["TURN_DIR"] == "TURNLEFT90":
-					if current_mode != "GUIDED":
-						vehicle.mode = "GUIDED"
-						current_mode = "GUIDED"
+					change_flight_mode("GUIDED")
 					turn(-90)
 					print("TURNLEFT90")
 
 				elif dec["BUTTONS"]["#05"] == 1 or dec["TURN_DIR"] == "TURNRIGHT45":
-					if current_mode != "GUIDED":
-						vehicle.mode = "GUIDED"
-						current_mode = "GUIDED"
+					change_flight_mode("GUIDED")
 					turn(45)
 					print("TURNRIGHT45")
 
 				elif dec["BUTTONS"]["#07"] == 1 or dec["TURN_DIR"] == "TURNRIGHT90":
-					if current_mode != "GUIDED":
-						vehicle.mode = "GUIDED"
-						current_mode = "GUIDED"
+					change_flight_mode("GUIDED")
 					turn(90)
 					print("TURNRIGHT90")
 
 				elif dec["BUTTONS"]["#16"] == 1 or dec["TURN_DIR"] == "TURN180":
-					if current_mode != "GUIDED":
-						vehicle.mode = "GUIDED"
-						current_mode = "GUIDED"
+					change_flight_mode("GUIDED")
 					turn(180)	
 					print("TURN180")
 
 				elif dec["FORWARD"] != 0:
-					if current_mode != "GUIDED":
-						vehicle.mode = "GUIDED"
-						current_mode = "GUIDED"
+					change_flight_mode("GUIDED")
 					goForward(int(dec["FORWARD"]))	
 					print("GOFORWARD")
 
 				elif dec["LEFT"] != 0:
-					if current_mode != "GUIDED":
-						vehicle.mode = "GUIDED"
-						current_mode = "GUIDED"
+					change_flight_mode("GUIDED")
 					goLeft(int(dec["LEFT"]))	
 					print("GOLEFT")
 
 				elif dec["RIGHT"] != 0:
-					if current_mode != "GUIDED":
-						vehicle.mode = "GUIDED"
-						current_mode = "GUIDED"
+					change_flight_mode("GUIDED")
 					goRight(int(dec["RIGHT"]))	
 					print("GORIGHT")
 
@@ -310,29 +332,20 @@ with open(PORT, "rb", buffering=0) as term:
 				prev_mode = dec["MODE"]
 				prev_arm_state = dec['ARMED']
 			
+			#### Without gamepad / only buttons on browser ####
 			else:
-				# print(str_buffer)
-				if (dec["MODE"] == "MANUAL"):
-					if current_mode != "MANUAL":
-						vehicle.mode = "MANUAL"
 
-					current_mode = "MANUAL"
+				if (dec["MODE"] == "MANUAL"):
+					change_flight_mode("MANUAL")
 					print("WITHOUT_GAMEPAD : MANUAL")
 
 				elif (dec["MODE"] == "AUTO"):
-					if current_mode != "AUTO":
-						vehicle.mode = "AUTO"
-
-					current_mode = "AUTO"
+					change_flight_mode("AUTO")
 					print("WITHOUT_GAMEPAD : AUTO")
 
 				elif (dec["MODE"] == "HOLD"):
-					if current_mode != "HOLD":
-						vehicle.mode = "HOLD"
-
-					current_mode = "HOLD"
+					change_flight_mode("HOLD")
 					print("WITHOUT_GAMEPAD : HOLD")
-
 
 
 
@@ -343,86 +356,50 @@ with open(PORT, "rb", buffering=0) as term:
 						vehicle.armed = True
 					print("WITHOUT_GAMEPAD : ARMDISARM")
 
-				
 				prev_arm_state = dec['ARMED']
 
 
 
-
 				if dec["TURN_DIR"] == "TURNLEFT45":
-					if current_mode != "GUIDED":
-						vehicle.mode = "GUIDED"
-						current_mode = "GUIDED"
+					change_flight_mode("GUIDED")
 					turn(-45)
 					print("WITHOUT_GAMEPAD : TURNLEFT45")
 
 				elif dec["TURN_DIR"] == "TURNLEFT90":
-					if current_mode != "GUIDED":
-						vehicle.mode = "GUIDED"
-						current_mode = "GUIDED"
+					change_flight_mode("GUIDED")
 					turn(-90)
 					print("WITHOUT_GAMEPAD : TURNLEFT90")
 
 				elif dec["TURN_DIR"] == "TURNRIGHT45":
-					if current_mode != "GUIDED":
-						vehicle.mode = "GUIDED"
-						current_mode = "GUIDED"
+					change_flight_mode("GUIDED")
 					turn(45)
 					print("WITHOUT_GAMEPAD : TURNRIGHT45")
 
 				elif dec["TURN_DIR"] == "TURNRIGHT90":
-					if current_mode != "GUIDED":
-						vehicle.mode = "GUIDED"
-						current_mode = "GUIDED"
+					change_flight_mode("GUIDED")
 					turn(90)
 					print("WITHOUT_GAMEPAD : TURNRIGHT90")
 
 				elif dec["TURN_DIR"] == "TURN180":
-					if current_mode != "GUIDED":
-						vehicle.mode = "GUIDED"
-						current_mode = "GUIDED"
+					change_flight_mode("GUIDED")
 					turn(180)	
 					print("WITHOUT_GAMEPAD : TURN180")
 
 
 				elif dec["FORWARD"] != 0:
-					if current_mode != "GUIDED":
-						vehicle.mode = "GUIDED"
-						current_mode = "GUIDED"
+					change_flight_mode("GUIDED")
 					goForward(int(dec["FORWARD"]))	
 					print("GOFORWARD")
 
 				elif dec["LEFT"] != 0:
-					if current_mode != "GUIDED":
-						vehicle.mode = "GUIDED"
-						current_mode = "GUIDED"
+					change_flight_mode("GUIDED")
 					goLeft(int(dec["LEFT"]))	
 					print("GOLEFT")
 
 				elif dec["RIGHT"] != 0:
-					if current_mode != "GUIDED":
-						vehicle.mode = "GUIDED"
-						current_mode = "GUIDED"
+					change_flight_mode("GUIDED")
 					goRight(int(dec["RIGHT"]))	
 					print("GORIGHT")
-
-
-
-			# with open("rover_status.json", "w") as out_file:
-			# 	json.dump(rover_status, out_file)
-			# 	cmd1 = 'echo $(cat rover_status.json) >> /dev/pts/6'
-			# 	subprocess.run(cmd1, shell = True)
-
-			## Open file and overwrite it everytime
-			file = open(out_file_path, "w+")
-			json_data = json.dumps(rover_status)
-			file.write(json_data)
-			cmd1 = 'echo $(cat rover_status.txt) > {:s}'.format(PORT)
-			subprocess.run(cmd1, shell = True)
-			# print("send ", rover_status)
-
-			# print("sent data back")
-			# print('Down herer')
 
 		except KeyboardInterrupt:
 			quit()
@@ -430,9 +407,3 @@ with open(PORT, "rb", buffering=0) as term:
 			print(e)
 			print("Failed to parse")
 			pass
-
-			
-
-
-
-
