@@ -53,11 +53,13 @@ def vehicle_connect():
 	if vehicle == None:
 		try:
 			print("Connecting to Ardupilot....")
-			vehicle = connect('/dev/ttyUSB0', wait_ready=True, baud=921600)
+			vehicle = connect('/dev/usb_uart', wait_ready=True, baud=921600)
+		except KeyboardInterrupt:
+			quit()
 		except:
-			print('Connection error! Retrying...')
-			vehicle = connect('/dev/ttyUSB1', wait_ready=True, baud=921600)
-			time.sleep(1)
+			print('Check if there is /dev/usb_uart existed...')
+			quit()
+		
 
 	if vehicle == None:
 		is_vehicle_connected = False
@@ -321,7 +323,7 @@ while True:
 					STR_val = dec["AXES"]["#02"]
 					THR_val = (-1)*dec["AXES"]["#01"]
 
-					steering_pwm = int(round(STR_val*200 + 1500))
+					steering_pwm = int(round(STR_val*100 + 1500))
 					throttle_pwm = int(round(THR_val*200 + 1500))
 					vehicle.channels.overrides['1'] = steering_pwm
 					vehicle.channels.overrides['2'] = throttle_pwm
