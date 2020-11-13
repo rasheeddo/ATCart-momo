@@ -1,0 +1,27 @@
+CUBE is using usb_uart converter to communicate with Jetson
+
+Dynamixel servo is using u2d2 converter to get control from Jetson
+
+We have to creat udev rules for this, otherwise it will mess up sometimes
+
+check the idVendor idProduct and serial from attributes list by,
+
+		udevadm info --name=/dev/ttyUSBx --attribute-walk
+
+do it for both USB0 and USB1
+
+then create the rules by 
+
+		sudo touch /etc/udev/rules.d/99-usb-serial.rules
+
+then edit the file and put the attributes of two usb devices here
+
+ACTION=="add", ATTRS{idVendor}=="xxxx", ATTRS{idProduct}=="xxxx", ATTRS{serial}=="xxxx", SYMLINK+="u2d2"
+ACTION=="add", ATTRS{idVendor}=="xxxx", ATTRS{idProduct}=="xxxx", ATTRS{serial}=="xxxx", SYMLINK+="usb_uart"
+
+reload the udev rules by
+
+		sudo udevadm control --reload-rules
+
+reboot
+
