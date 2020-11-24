@@ -57,11 +57,15 @@ def vehicle_connect():
 
 	if vehicle == None:
 		try:
-			if sim.startswith('sitl'):
-				print("Connecting to Ardupilot on SITL...")
-				vehicle = connect('udp:127.0.0.1:14551', wait_ready=True)
-				steering_ch = '1'
-				throttle_ch = '3'
+			if sim is not None:
+				if sim.startswith('sitl'):
+					print("Connecting to Ardupilot on SITL...")
+					vehicle = connect('udp:127.0.0.1:14551', wait_ready=True)
+					steering_ch = '1'
+					throttle_ch = '3'
+				else:
+					print('please enter --sim sitl for SITL simulator')
+					quit()
 			else:
 				print("Connecting to Ardupilot....")
 				vehicle = connect('/dev/usb_uart', wait_ready=True, baud=921600)
@@ -69,7 +73,8 @@ def vehicle_connect():
 				throttle_ch = '2'
 		except KeyboardInterrupt:
 			quit()
-		except:
+		except Exception as e:
+			print(e)
 			print('Check if there is /dev/usb_uart existed...')
 			quit()
 		
