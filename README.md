@@ -13,7 +13,12 @@ The process to run right now is pretty much manually, you will ned to run `sh 01
 
 Start 3 channels of momo/ayame, there should be momo executable file on the robot, download it from [here](https://github.com/shiguredo/momo/releases) 
 
-Run `python3 AP_momo_test.py --port /dev/pts/<second generated port above from socat>`
+Run on the real robot, `python3 AP_momo_test.py --port /dev/pts/<second generated port above from socat>`
+
+Run on the simulator SITL, `python3 AP_momo_test.py --port /dev/pts/<second generated port above from socat> --sim sitl`, this is in case you have Arduplilot SITL on your Jetson or your PC, then to start the simluator from ardupilot directory go to  `cd Tools/autotest`, then you can run this command
 
 
+`sim_vehicle.py -v Rover -f rover-skid --map --console`
 
+
+Please check on how to install and setup SITL [here](https://ardupilot.org/dev/docs/sitl-simulator-software-in-the-loop.html), if you want to try the simulator.
